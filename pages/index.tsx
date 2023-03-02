@@ -8,48 +8,21 @@ import React, {useState} from "react";
 import {Contract} from "ethers";
 import {useAccount, useSigner} from "wagmi";
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 const Home: NextPage = () => {
 
+        const [promptInput, setPromptInput] = useState<string>("");
+        const [creatureImg, setCreatureImg] = useState<string>("https://replicate.com/api/models/lambdal/text-to-pokemon/files/4d12a241-fd84-4b0a-8321-80dd8c6ae784/out-0.png");
+        const [isLoading, setLoading] = useState<boolean>(false);
+        const [prediction, setPrediction] = useState(null);
         const {address} = useAccount();
         const {data: signer} = useSigner();
 
-        // function generateCreature() {
-        //     setIsLoading(true);
-        //
-        //     fetch("https://api.replicate.com/v1/predictions", {
-        //         method: 'POST',
-        //         mode: 'cors', // no-cors, *cors, same-origin
-        //         // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        //         // credentials: 'same-origin', // include, *same-origin, omit
-        //         headers: {
-        //             'Authorization': 'Token ' + process.env.NEXT_PUBLIC_REPLICATE_API_TOKEN,
-        //             'Content-Type': 'application/json',
-        //             'Accept': 'application/json'
-        //         },
-        //         // redirect: 'follow',
-        //         // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        //         body: JSON.stringify({
-        //             data: {
-        //                 version: "3554d9e699e09693d3fa334a79c58be9a405dd021d3e11281256d53185868912",
-        //                 input: {prompt: promptInput}
-        //             }
-        //         })
-        //     })
-        //         .then((response) => response.json())
-        //         .then((data) => {
-        //             setIsLoading(false);
-        //             setCreatureImg(data.output[0]);
-        //             console.log(data); // JSON data parsed by `data.json()` call
-        //         }).catch((error) => {
-        //         setIsLoading(false);
-        //         console.error('Error:', error);
-        //     });
-        // }
-
         async function generateCreature(e: React.MouseEvent<HTMLButtonElement>) {
             e.preventDefault();
-            setIsLoading(true);
-            const response = await fetch("/api/generate", {
+            setLoading(true);
+            const response = await fetch("/api/creature", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -57,26 +30,39 @@ const Home: NextPage = () => {
                 body: JSON.stringify({prompt: promptInput}),
             });
 
-            if (!response.ok) {
+            if (response.status !== 201) {
                 throw new Error(`Error: ${response.status}`);
             }
 
-            const data = await response.json();
-            console.log('POST: ', data);
-            setCreatureImg(data.image_url);
-            setIsLoading(false);
-        }
+            let prediction = await response.json();
+            setPrediction(prediction);
+            while (
+                prediction.status !== "succeeded" &&
+                prediction.status !== "failed"
+                ) {
+                await sleep(500);
+                console.log("waiting for prediction to finish " + prediction.id);
+                const response = await fetch("/api/predictions/" + prediction.id);
+                prediction = await response.json();
+                if (response.status !== 200) {
+                    console.log(prediction.detail);
+                    return;
+                }
+                console.log({prediction})
+                setPrediction(prediction);
+                if (prediction.output != null)
+                    setCreatureImg(prediction.output[prediction.output.length - 1]);
+                setLoading(false);
+            }
 
-        const [promptInput, setPromptInput] = useState<string>("");
-        const [creatureImg, setCreatureImg] = useState<string>("https://replicate.com/api/models/lambdal/text-to-pokemon/files/4d12a241-fd84-4b0a-8321-80dd8c6ae784/out-0.png");
-        const [isLoading, setIsLoading] = useState<boolean>(false);
+        }
 
         function handlePromptInput(e: React.ChangeEvent<HTMLInputElement>) {
             setPromptInput(e.target.value)
         }
 
         async function mintNft() {
-            setIsLoading(true);
+            setLoading(true);
             const response = await fetch("/api/ipfs", {
                 method: "POST",
                 headers: {
@@ -95,12 +81,12 @@ const Home: NextPage = () => {
             const nftContract = new Contract('0x5cBeEBfFb922377dce34307167c95585A00C1721', contractAbi.abi, signer);
             try {
                 const mintTx = await nftContract.safeMint(address, data.ipfs_url);
-                setIsLoading(false);
+                setLoading(false);
                 console.log(mintTx?.hash);
                 await mintTx.wait();
             } catch (e) {
                 console.log(e);
-                setIsLoading(false);
+                setLoading(false);
             }
         }
 
@@ -144,11 +130,18 @@ const Home: NextPage = () => {
                                 Generate
                             </Button>
 
-                            {isLoading && <Progress size='sm' isIndeterminate/>}
+                            {isLoading &&
+                                <div><Progress size='sm' isIndeterminate/>
+                                    {prediction && (
+                                        <div>
+                                            <p>status: {prediction.status}</p>
+                                        </div>
+                                    )} </div>
+                            }
 
                             <Image
                                 margin={5}
-                                boxSize="400px"
+                                boxSize="450px"
                                 src={creatureImg}
                                 alt="Creature"
                             />
