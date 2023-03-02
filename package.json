@@ -9,18 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.3.7",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@rainbow-me/rainbowkit": "^0.7.4",
-    "ethers": "^5.0.0",
-    "next": "^12.1.6",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "wagmi": "^0.7.5"
+    "ethers": "^5.7.2",
+    "framer-motion": "^7.6.5",
+    "next": "^13.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "wagmi": "^0.7.15",
+    "@pinata/sdk": "^2.1.0",
+    "openai": "^3.1.0"
   },
   "devDependencies": {
-    "@types/node": "^17.0.35",
-    "@types/react": "^18.0.9",
-    "eslint": "^8.15.0",
-    "eslint-config-next": "^12.1.6",
-    "typescript": "^4.7.2"
+    "@types/node": "^18.11.9",
+    "@types/react": "^18.0.25",
+    "eslint": "^8.27.0",
+    "eslint-config-next": "^13.0.2",
+    "typescript": "^4.8.4"
   }
 }
