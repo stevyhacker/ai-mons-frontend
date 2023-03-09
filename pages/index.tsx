@@ -7,6 +7,7 @@ import contractAbi from "../public/AICreations.json"
 import React, {useState} from "react";
 import {Contract} from "ethers";
 import {useAccount, useSigner} from "wagmi";
+import NftGallery from "../components/NftGallery";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -21,6 +22,11 @@ const Home: NextPage = () => {
 
         async function generateCreature(e: React.MouseEvent<HTMLButtonElement>) {
             e.preventDefault();
+            if (isLoading) {
+                alert("Please wait for the current generation to finish");
+                return;
+            }
+
             setLoading(true);
             const response = await fetch("/api/creature", {
                 method: "POST",
@@ -41,18 +47,19 @@ const Home: NextPage = () => {
                 prediction.status !== "failed"
                 ) {
                 await sleep(500);
-                console.log("waiting for prediction to finish " + prediction.id);
+                // console.log("waiting for prediction to finish " + prediction.id);
                 const response = await fetch("/api/predictions/" + prediction.id);
                 prediction = await response.json();
                 if (response.status !== 200) {
                     console.log(prediction.detail);
                     return;
                 }
-                console.log({prediction})
+                // console.log({prediction})
                 setPrediction(prediction);
-                if (prediction.output != null)
+                if (prediction.output != null) {
                     setCreatureImg(prediction.output[prediction.output.length - 1]);
-                setLoading(false);
+                    setLoading(false);
+                }
             }
 
         }
@@ -74,11 +81,11 @@ const Home: NextPage = () => {
             if (!response.ok) {
                 throw new Error(`Error: ${response.status}`);
             }
-
+            const nftContractAddress = process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS || '';
             const data = await response.json();
             console.log('POST: ', data);
             console.log("Minting NFT");
-            const nftContract = new Contract('0x5cBeEBfFb922377dce34307167c95585A00C1721', contractAbi.abi, signer);
+            const nftContract = new Contract(nftContractAddress, contractAbi.abi, signer);
             try {
                 const mintTx = await nftContract.safeMint(address, data.ipfs_url);
                 setLoading(false);
@@ -162,7 +169,16 @@ const Home: NextPage = () => {
                             </Button>
                         </div>
 
+
+
                     </div>
+
+                    <h2 className={styles.title}>Existing Aimons</h2>
+                    <NftGallery collectionAddress={process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS} chain={"MATIC_MUMBAI"} pageSize={10}/>
+
+                    {/*<a href={'https://opensea.io/collection/ai-creations'} target={'_blank'} rel="noreferrer"> Collection </a>*/}
+                    {/*<a href={'/gallery'} target={'_blank'} rel="noreferrer"> Gallery </a>*/}
+
                 </main>
 
                 <footer className={styles.footer}>
