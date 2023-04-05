@@ -11,17 +11,33 @@ import NftGallery from "../components/NftGallery";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+type Aimon = {
+    level: number;
+    hp: number;
+    attack: number;
+    defense: number;
+    speed: number;
+    special: number;
+};
 const Home: NextPage = () => {
 
         const [promptInput, setPromptInput] = useState<string>("");
         const [creatureImg, setCreatureImg] = useState<string>("https://replicate.com/api/models/lambdal/text-to-pokemon/files/4d12a241-fd84-4b0a-8321-80dd8c6ae784/out-0.png");
         const [isLoading, setLoading] = useState<boolean>(false);
         const [prediction, setPrediction] = useState(null);
+        const [aimon, setAimon] = useState<Aimon>({
+            level: 1
+            , hp: 0, attack: 0, defense: 0, speed: 0, special: 0
+        });
         const {address} = useAccount();
         const {data: signer} = useSigner();
 
         async function generateCreature(e: React.MouseEvent<HTMLButtonElement>) {
             e.preventDefault();
+            if (promptInput.length === 0) {
+                alert("Please enter a prompt");
+                return;
+            }
             if (isLoading) {
                 alert("Please wait for the current generation to finish");
                 return;
@@ -61,6 +77,15 @@ const Home: NextPage = () => {
                     setLoading(false);
                 }
             }
+
+            setAimon({
+                level: 1,
+                hp: Math.floor(Math.random() * 100) + 1,
+                attack: Math.floor(Math.random() * 100) + 1,
+                defense: Math.floor(Math.random() * 100) + 1,
+                speed: Math.floor(Math.random() * 100) + 1,
+                special: Math.floor(Math.random() * 100) + 1
+            })
 
         }
 
@@ -115,16 +140,11 @@ const Home: NextPage = () => {
 
                     <p className={styles.description}>
                         To generate a new AiMon press Generate and wait a few seconds.
-                    </p>
-                    <p className={styles.subtitle}>
+                        <br/>
                         To unlock <b>evolutions</b> mint your creature as an NFT on the
                         Polygon network.
                     </p>
 
-                    <p className={styles.subtitle}>
-                        To unlock <b>evolutions</b> mint your creature as an NFT on the
-                        Polygon network.
-                    </p>
                     <div className={styles.grid}>
                         <div className={styles.card}>
                             <Input
@@ -134,7 +154,7 @@ const Home: NextPage = () => {
                                 margin={2}
                             />
                             <Button onClick={generateCreature} colorScheme="blue" margin={2}>
-                                Generate
+                                Generate Creature
                             </Button>
 
                             {isLoading &&
@@ -152,13 +172,16 @@ const Home: NextPage = () => {
                                 src={creatureImg}
                                 alt="Creature"
                             />
+                            <Button onClick={mintNft} colorScheme="blue">
+                                Generate Backstory
+                            </Button>
                             <div className={styles.card}>
                                 <p>Level: 1</p>
-                                <p>HP: 100</p>
-                                <p>Attack: 100</p>
-                                <p>Defense: 100</p>
-                                <p>Speed: 100</p>
-                                <p>Special: 100</p>
+                                <p>HP: {aimon.hp}</p>
+                                <p>Attack: {aimon.attack}</p>
+                                <p>Defense: {aimon.defense}</p>
+                                <p>Speed: {aimon.speed}</p>
+                                <p>Special: {aimon.special}</p>
                             </div>
                             <Button onClick={mintNft} colorScheme="blue" margin={2}>
                                 Mint
@@ -169,12 +192,11 @@ const Home: NextPage = () => {
                             </Button>
                         </div>
 
-
-
                     </div>
 
                     <h2 className={styles.title}>Existing Aimons</h2>
-                    <NftGallery collectionAddress={process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS} chain={"MATIC_MUMBAI"} pageSize={10}/>
+                    <NftGallery collectionAddress={process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS} chain={"MATIC_MUMBAI"}
+                                pageSize={10}/>
 
                     {/*<a href={'https://opensea.io/collection/ai-creations'} target={'_blank'} rel="noreferrer"> Collection </a>*/}
                     {/*<a href={'/gallery'} target={'_blank'} rel="noreferrer"> Gallery </a>*/}

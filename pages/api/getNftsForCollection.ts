@@ -9,10 +9,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(405).send({ message: "Only POST requests allowed" });
         return;
     }
-    console.log(chain);
     const settings = {
         apiKey: process.env.ALCHEMY_API_KEY,
-        network: Network[chain],
+        network: Network[chain as keyof typeof Network],
     };
     const alchemy = new Alchemy(settings);
 

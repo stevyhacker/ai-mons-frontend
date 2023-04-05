@@ -1,6 +1,6 @@
 import styles from "../styles/NftGallery.module.css";
 
-export default function NftCard({ nft }) {
+export default function NftCard({ nft }: { nft: any }) {
     return (
         <div className={styles.card_container}>
             <div className={styles.image_container}>
