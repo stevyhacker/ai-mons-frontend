@@ -110,7 +110,9 @@ const Home: NextPage = () => {
                 throw new Error(`Error: ${response.status}`);
             }
             const data = await response.json();
-            setBackstory(data.message);
+            // trims unfinished sentence if any
+            const lastDotIndex = data.message.lastIndexOf('.');
+            setBackstory(data.message.slice(0, lastDotIndex + 1));
         }
 
         async function mintNft() {
@@ -120,7 +122,7 @@ const Home: NextPage = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({prompt: promptInput, image_url: creatureImg}),
+                body: JSON.stringify({prompt: promptInput, image_url: creatureImg, story: backstory, stats: aimon}),
             });
 
             if (!response.ok) {
@@ -221,11 +223,12 @@ const Home: NextPage = () => {
                                 pageSize={10} walletAddress={undefined}/>
 
                     {/*<a href={'https://opensea.io/collection/ai-creations'} target={'_blank'} rel="noreferrer"> Collection </a>*/}
-                    {/*<a href={'/gallery'} target={'_blank'} rel="noreferrer"> Gallery </a>*/}
 
                 </main>
 
                 <footer className={styles.footer}>
+                    <a href={'/gallery'} target={'_blank'} rel="noreferrer"> Gallery </a>
+
                     <a href="https://stevyhacker.github.io" target="_blank" rel="noopener noreferrer">
                         Made by @stevyhacker
                     </a>

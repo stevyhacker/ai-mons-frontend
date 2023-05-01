@@ -29,7 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 pinata.pinJSONToIPFS({
                     "name": req.body.prompt,
                     "image": `https://gateway.pinata.cloud/ipfs/${response.IpfsHash}`,
-                    "description": "AI Generated NFT - " + req.body.prompt,
+                    "description": req.body.story,
+                    "attributes": req.body.stats,
                 }).then((response) => {
                     console.log(response);
                     res.status(200).json({ipfs_url: `https://gateway.pinata.cloud/ipfs/${response.IpfsHash}`});
