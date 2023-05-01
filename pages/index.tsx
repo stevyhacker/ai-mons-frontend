@@ -8,6 +8,7 @@ import React, {useState} from "react";
 import {Contract} from "ethers";
 import {useAccount, useSigner} from "wagmi";
 import NftGallery from "../components/NftGallery";
+import axios from "axios";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -31,6 +32,8 @@ const Home: NextPage = () => {
         });
         const {address} = useAccount();
         const {data: signer} = useSigner();
+        const [backstory, setBackstory] = useState('');
+
 
         async function generateCreature(e: React.MouseEvent<HTMLButtonElement>) {
             e.preventDefault();
@@ -91,6 +94,23 @@ const Home: NextPage = () => {
 
         function handlePromptInput(e: React.ChangeEvent<HTMLInputElement>) {
             setPromptInput(e.target.value)
+        }
+
+        async function generateStory() {
+            console.log('Generating story');
+
+            const response = await fetch("/api/storymaker", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({promptInput}),
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            const data = await response.json();
+            setBackstory(data.message);
         }
 
         async function mintNft() {
@@ -172,9 +192,10 @@ const Home: NextPage = () => {
                                 src={creatureImg}
                                 alt="Creature"
                             />
-                            <Button onClick={mintNft} colorScheme="blue">
+                            <Button onClick={generateStory} colorScheme="blue">
                                 Generate Backstory
                             </Button>
+                            <p>{backstory}</p>
                             <div className={styles.card}>
                                 <p>Level: 1</p>
                                 <p>HP: {aimon.hp}</p>
@@ -195,8 +216,9 @@ const Home: NextPage = () => {
                     </div>
 
                     <h2 className={styles.title}>Existing Aimons</h2>
-                    <NftGallery collectionAddress={process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS} chain={"MATIC_MUMBAI"}
-                                pageSize={10}/>
+                    <NftGallery collectionAddress={process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS}
+                                chain={"MATIC_MUMBAI"}
+                                pageSize={10} walletAddress={undefined}/>
 
                     {/*<a href={'https://opensea.io/collection/ai-creations'} target={'_blank'} rel="noreferrer"> Collection </a>*/}
                     {/*<a href={'/gallery'} target={'_blank'} rel="noreferrer"> Gallery </a>*/}

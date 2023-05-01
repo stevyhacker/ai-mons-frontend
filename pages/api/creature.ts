@@ -17,14 +17,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (response.status !== 201) {
         let error = await response.json();
-        console.log(error);
+        // console.log(error);
         res.statusCode = 500;
         res.end(JSON.stringify({ detail: error.detail }));
         return;
     }
 
     const prediction = await response.json();
-    console.log(prediction);
+    // console.log(prediction);
     res.statusCode = 201;
     res.end(JSON.stringify(prediction));
 
