@@ -5,7 +5,7 @@ import styles from "../styles/Home.module.css";
 import {Button, Image, Progress, Input} from "@chakra-ui/react";
 import contractAbi from "../public/AICreations.json"
 import React, {useState} from "react";
-import {Contract} from "ethers";
+import {Contract, ethers} from "ethers";
 import {useAccount, useSigner} from "wagmi";
 import NftGallery from "../components/NftGallery";
 
@@ -133,7 +133,7 @@ const Home: NextPage = () => {
             console.log("Minting NFT");
             const nftContract = new Contract(nftContractAddress, contractAbi.abi, signer);
             try {
-                const mintTx = await nftContract.safeMint(address, data.ipfs_url);
+                const mintTx = await nftContract.safeMint(address, data.ipfs_url, {value: ethers.utils.parseEther('1')});
                 setLoading(false);
                 console.log(mintTx?.hash);
                 await mintTx.wait();
@@ -196,7 +196,7 @@ const Home: NextPage = () => {
                             <Button onClick={generateStory} colorScheme="blue">
                                 Generate Backstory
                             </Button>
-                            <p  className={styles.storytext} >{backstory}</p>
+                            <p className={styles.storytext}>{backstory}</p>
                             <div className={styles.card}>
                                 <p>Level: 1</p>
                                 <p>HP: {aimon.hp}</p>
