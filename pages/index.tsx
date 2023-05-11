@@ -182,12 +182,12 @@ const Home: NextPage = () => {
                                 placeholder="Your AiMon prompt - example: baby yoda"
                                 margin={2}
                             />
-                            <Button onClick={generateCreature} colorScheme="blue" margin={2}>
+                            <Button onClick={generateCreature} background={"#86C8BC"} margin={2}>
                                 Generate Creature
                             </Button>
 
                             {isLoading &&
-                                <div><Progress size='sm' isIndeterminate/>
+                                <div><Progress colorScheme='teal' size='xs' isIndeterminate/>
                                     {prediction && (
                                         <div>
                                             <p>status: {prediction.status}</p>
@@ -201,7 +201,7 @@ const Home: NextPage = () => {
                                 src={creatureImg}
                                 alt="Creature"
                             />
-                            <Button onClick={generateStory} colorScheme="blue">
+                            <Button onClick={generateStory} background={"#86C8BC"} >
                                 Generate Backstory
                             </Button>
                             <p className={styles.storytext}>{backstory}</p>
@@ -213,16 +213,17 @@ const Home: NextPage = () => {
                                 <p>Speed: {'★'.repeat(aimon.speed)}</p>
                                 <p>Special: {'★'.repeat(aimon.special)}</p>
                             </div>
-                            <Button onClick={mintNft} colorScheme="blue" margin={2}>
+                            <Button onClick={mintNft} background={"#86C8BC"} margin={2}>
                                 Mint NFT
                             </Button>
 
-                            <Button onClick={evolve} colorScheme="blue" disabled margin={2}>
+                            <Button onClick={evolve} background={"#86C8BC"} disabled margin={2}>
                                 Evolve
                             </Button>
 
                             {isMinting &&
-                                <div><Progress size='xs' isIndeterminate/>
+                                <div><Progress colorScheme='teal' size='xs' isIndeterminate/>
+                                    Your wallet will prompt you to confirm the transaction.
                                 </div>
                             }
                         </div>
