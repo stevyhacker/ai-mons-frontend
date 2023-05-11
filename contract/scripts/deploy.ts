@@ -1,9 +1,9 @@
-import { ethers, run} from "hardhat";
+import {ethers, run} from "hardhat";
 import {delay} from "@nomiclabs/hardhat-etherscan/dist/src/etherscan/EtherscanService";
 
 async function main() {
 
-    console.log("Deploying AICreations...")
+    console.log("Deploying AiMons...")
     console.log("Account: ", (await ethers.getSigners())[0].address);
 
     const Contract = await ethers.getContractFactory("AiMons");
@@ -13,14 +13,15 @@ async function main() {
 
     await contract.deployed();
 
-    console.log("AICreations deployed to:", contract.address);
+    console.log("AiMons deployed to:", contract.address);
+
+    console.log("Waiting for 20 seconds...");
+
+    await delay(20000);
 
     console.log("Transferring ownership to beneficiary...")
     await contract.transferOwnership(beneficiary);
-
-    console.log("Waiting for 10 seconds...");
-
-    await delay(10000);
+    console.log("Ownership transferred to:", beneficiary);
 
     console.log("Verifying on Etherscan...");
 

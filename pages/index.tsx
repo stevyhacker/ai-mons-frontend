@@ -2,7 +2,7 @@ import {ConnectButton} from "@rainbow-me/rainbowkit";
 import type {NextPage} from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import {Button, Image, Progress, Input, CircularProgress} from "@chakra-ui/react";
+import {Button, Image, Progress, Input, CircularProgress, Text} from "@chakra-ui/react";
 import contractAbi from "../public/AiMons.json"
 import React, {useState} from "react";
 import {Contract, ethers} from "ethers";
@@ -24,6 +24,7 @@ const Home: NextPage = () => {
         const [promptInput, setPromptInput] = useState<string>("");
         const [creatureImg, setCreatureImg] = useState<string>("https://replicate.com/api/models/lambdal/text-to-pokemon/files/4d12a241-fd84-4b0a-8321-80dd8c6ae784/out-0.png");
         const [isLoading, setLoading] = useState<boolean>(false);
+        const [isGenerating, setGenerating] = useState<boolean>(false);
         const [isMinting, setMinting] = useState<boolean>(false);
         const [prediction, setPrediction] = useState(null);
         const [aimon, setAimon] = useState<Aimon>({
@@ -98,6 +99,7 @@ const Home: NextPage = () => {
 
         async function generateStory() {
             console.log('Generating story');
+            setGenerating(true);
 
             const response = await fetch("/api/storymaker", {
                 method: "POST",
@@ -113,6 +115,7 @@ const Home: NextPage = () => {
             // trims unfinished sentence if any
             const lastDotIndex = data.message.lastIndexOf('.');
             setBackstory(data.message.slice(0, lastDotIndex + 1));
+            setGenerating(false);
         }
 
         async function mintNft() {
@@ -189,7 +192,7 @@ const Home: NextPage = () => {
                                 <div><Progress colorScheme='teal' size='xs' isIndeterminate/>
                                     {prediction && (
                                         <div>
-                                            <p>status: {prediction.status}</p>
+                                            <Text size='xs'>status: {prediction.status}</Text>
                                         </div>
                                     )} </div>
                             }
@@ -200,9 +203,17 @@ const Home: NextPage = () => {
                                 src={creatureImg}
                                 alt="Creature"
                             />
-                            <Button onClick={generateStory} background={"#86C8BC"} >
+                            <Button onClick={generateStory} background={"#86C8BC"}>
                                 Generate Backstory
                             </Button>
+
+                            {isGenerating &&
+                                <div>
+                                    <br/>
+                                    <div><Progress colorScheme='teal' size='xs' isIndeterminate/>
+                                    </div>
+                                </div>
+                            }
                             <p className={styles.storytext}>{backstory}</p>
                             <div className={styles.card}>
                                 <p>Level: 1</p>
@@ -223,6 +234,7 @@ const Home: NextPage = () => {
                             {isMinting &&
                                 <div><Progress colorScheme='teal' size='xs' isIndeterminate/>
                                     Your wallet will prompt you to confirm the transaction.
+                                    Refresh the page after your transaction is confirmed to see your new AiMon.
                                 </div>
                             }
                         </div>

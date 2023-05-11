@@ -10,7 +10,7 @@ import {mainnet, polygon, goerli, polygonMumbai} from "@wagmi/chains";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
-    mainnet,
+    // mainnet,
     polygon,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true"
       ? [goerli, polygonMumbai]

@@ -3,7 +3,7 @@ import styles from "../styles/NftGallery.module.css";
 export default function NftCard({nft}: { nft: any }) {
     return (
         <div className={styles.card_container}>
-            <a href={"https://opensea.com/nft/" + nft.contract + "/" + nft.tokenId}>
+            <a href={"https://opensea.io/assets/matic/" + nft.contract + "/" + nft.tokenId}>
 
                 <div className={styles.image_container}>
                     <img src={nft.media}></img>
