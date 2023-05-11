@@ -3,12 +3,11 @@ import type {NextPage} from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import {Button, Image, Progress, Input, CircularProgress} from "@chakra-ui/react";
-import contractAbi from "../public/AICreations.json"
+import contractAbi from "../public/AiMons.json"
 import React, {useState} from "react";
 import {Contract, ethers} from "ethers";
 import {useAccount, useSigner} from "wagmi";
 import NftGallery from "../components/NftGallery";
-import {repeat} from "rxjs/operators";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

@@ -43,10 +43,6 @@ contract AiMons is ERC721URIStorage, ERC721Royalty, Ownable {
         _setTokenURI(tokenId, uri);
     }
 
-    //    function royaltyInfo(uint256, uint256 _salePrice) external view returns (address receiver, uint256 royaltyAmount) {
-    //        return (beneficiary, _salePrice);
-    //    }
-
     // The following functions are overrides required by Solidity.
 
     function _burn(uint256 tokenId) internal override(ERC721URIStorage, ERC721Royalty) {
