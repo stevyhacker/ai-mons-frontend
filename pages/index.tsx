@@ -2,12 +2,13 @@ import {ConnectButton} from "@rainbow-me/rainbowkit";
 import type {NextPage} from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import {Button, Image, Progress, Input} from "@chakra-ui/react";
+import {Button, Image, Progress, Input, CircularProgress} from "@chakra-ui/react";
 import contractAbi from "../public/AICreations.json"
 import React, {useState} from "react";
 import {Contract, ethers} from "ethers";
 import {useAccount, useSigner} from "wagmi";
 import NftGallery from "../components/NftGallery";
+import {repeat} from "rxjs/operators";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -24,10 +25,11 @@ const Home: NextPage = () => {
         const [promptInput, setPromptInput] = useState<string>("");
         const [creatureImg, setCreatureImg] = useState<string>("https://replicate.com/api/models/lambdal/text-to-pokemon/files/4d12a241-fd84-4b0a-8321-80dd8c6ae784/out-0.png");
         const [isLoading, setLoading] = useState<boolean>(false);
+        const [isMinting, setMinting] = useState<boolean>(false);
         const [prediction, setPrediction] = useState(null);
         const [aimon, setAimon] = useState<Aimon>({
             level: 1
-            , hp: 0, attack: 0, defense: 0, speed: 0, special: 0
+            , hp: 1, attack: 1, defense: 1, speed: 1, special: 1
         });
         const {address} = useAccount();
         const {data: signer} = useSigner();
@@ -82,11 +84,11 @@ const Home: NextPage = () => {
 
             setAimon({
                 level: 1,
-                hp: Math.floor(Math.random() * 100) + 1,
-                attack: Math.floor(Math.random() * 100) + 1,
-                defense: Math.floor(Math.random() * 100) + 1,
-                speed: Math.floor(Math.random() * 100) + 1,
-                special: Math.floor(Math.random() * 100) + 1
+                hp: Math.floor(Math.random() * 10) + 1,
+                attack: Math.floor(Math.random() * 10) + 1,
+                defense: Math.floor(Math.random() * 10) + 1,
+                speed: Math.floor(Math.random() * 10) + 1,
+                special: Math.floor(Math.random() * 10) + 1
             })
 
         }
@@ -115,7 +117,7 @@ const Home: NextPage = () => {
         }
 
         async function mintNft() {
-            setLoading(true);
+            setMinting(true);
             const response = await fetch("/api/ipfs", {
                 method: "POST",
                 headers: {
@@ -135,12 +137,18 @@ const Home: NextPage = () => {
             try {
                 const mintTx = await nftContract.safeMint(address, data.ipfs_url, {value: ethers.utils.parseEther('1')});
                 setLoading(false);
+                setMinting(false);
                 console.log(mintTx?.hash);
                 await mintTx.wait();
             } catch (e) {
                 console.log(e);
                 setLoading(false);
+                setMinting(false);
             }
+        }
+
+        function evolve() {
+            alert('Evolve coming soon!');
         }
 
         return (
@@ -199,19 +207,24 @@ const Home: NextPage = () => {
                             <p className={styles.storytext}>{backstory}</p>
                             <div className={styles.card}>
                                 <p>Level: 1</p>
-                                <p>HP: {aimon.hp}</p>
-                                <p>Attack: {aimon.attack}</p>
-                                <p>Defense: {aimon.defense}</p>
-                                <p>Speed: {aimon.speed}</p>
-                                <p>Special: {aimon.special}</p>
+                                <p>HP: {'★'.repeat(aimon.hp)}</p>
+                                <p>Attack: {'★'.repeat(aimon.attack)}</p>
+                                <p>Defense: {'★'.repeat(aimon.defense)}</p>
+                                <p>Speed: {'★'.repeat(aimon.speed)}</p>
+                                <p>Special: {'★'.repeat(aimon.special)}</p>
                             </div>
                             <Button onClick={mintNft} colorScheme="blue" margin={2}>
-                                Mint
+                                Mint NFT
                             </Button>
 
-                            <Button colorScheme="blue" disabled margin={2}>
+                            <Button onClick={evolve} colorScheme="blue" disabled margin={2}>
                                 Evolve
                             </Button>
+
+                            {isMinting &&
+                                <div><Progress size='xs' isIndeterminate/>
+                                </div>
+                            }
                         </div>
 
                     </div>
@@ -226,7 +239,7 @@ const Home: NextPage = () => {
                 </main>
 
                 <footer className={styles.footer}>
-                    <a href={'/gallery'} target={'_blank'} rel="noreferrer"> Gallery </a>
+                    <a href={'/gallery'} target={'_blank'} rel="noreferrer"> Gallery page</a>
 
                     <a href="https://stevyhacker.github.io" target="_blank" rel="noopener noreferrer">
                         Made by @stevyhacker
