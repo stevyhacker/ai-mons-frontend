@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Royalty.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -19,7 +19,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 //    ⠀⠀⠘⡿⠃⠀⠨⠒⢆⣸⣿⠁⠀⡠⡇⠈⠋⠀⠰⠀
 //    ⠀⠀⠀⠛⠒⠒⠁⠀⠈⠷⡤⠤⠐⠀⠘⠒⠒⠖⠁⠀
 
-contract AiMons is ERC721, ERC721URIStorage, Ownable {
+contract AiMons is ERC721URIStorage, ERC721Royalty, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
@@ -30,6 +30,7 @@ contract AiMons is ERC721, ERC721URIStorage, Ownable {
     constructor(uint256 _salePrice, address _beneficiary) ERC721("AICreations", "AIC") {
         beneficiary = _beneficiary;
         salePrice = _salePrice;
+        _setDefaultRoyalty(beneficiary, 1000);
     }
 
     function safeMint(address to, string memory uri) public payable {
@@ -42,9 +43,13 @@ contract AiMons is ERC721, ERC721URIStorage, Ownable {
         _setTokenURI(tokenId, uri);
     }
 
+    //    function royaltyInfo(uint256, uint256 _salePrice) external view returns (address receiver, uint256 royaltyAmount) {
+    //        return (beneficiary, _salePrice);
+    //    }
+
     // The following functions are overrides required by Solidity.
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    function _burn(uint256 tokenId) internal override(ERC721URIStorage, ERC721Royalty) {
         super._burn(tokenId);
     }
 
@@ -55,5 +60,9 @@ contract AiMons is ERC721, ERC721URIStorage, Ownable {
     returns (string memory)
     {
         return super.tokenURI(tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Royalty) returns (bool) {
+        return super.supportsInterface(interfaceId);
     }
 }
