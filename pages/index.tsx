@@ -163,6 +163,10 @@ const Home: NextPage = () => {
                         content="Generate your own AiMon and mint it as an NFT on the Polygon network."
                     />
                     <link rel="icon" href="/favicon/favicon.ico"/>
+                    <meta property="og:title" content="Aimons.xyz"/>
+                    <meta property="og:description" content={"AI generated creatures with ChatGPT backstories and minted as an NFT"}/>
+                    <meta name="twitter:title" content="Aimons.xyz"/>
+                    <meta name="twitter:description" content={"AI generated creatures with ChatGPT backstories and minted as an NFT"}/>
                 </Head>
 
                 <main className={styles.main}>
