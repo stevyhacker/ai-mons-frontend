@@ -8,6 +8,7 @@ import React, {useState} from "react";
 import {Contract, ethers} from "ethers";
 import {useAccount, useSigner} from "wagmi";
 import NftGallery from "../components/NftGallery";
+import {Network} from "alchemy-sdk";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -243,7 +244,7 @@ const Home: NextPage = () => {
 
                     <h2 className={styles.title}>Existing Aimons</h2>
                     <NftGallery collectionAddress={process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS}
-                                chain={"MATIC_MUMBAI"}
+                                chain={"MATIC_MAINNET"}
                                 pageSize={10} walletAddress={undefined}/>
 
                     {/*<a href={'https://opensea.io/collection/ai-creations'} target={'_blank'} rel="noreferrer"> Collection </a>*/}

@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         network: Network[chain as keyof typeof Network],
     };
     const alchemy = new Alchemy(settings);
-
+    console.log("address", address);
     try {
         const nfts = await alchemy.nft.getNftsForContract(address, {
             pageKey: pageKey ? pageKey : null,
@@ -44,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
         // the rest of your code
     } catch (e) {
-        console.warn(e);
+        console.log(e);
         res.status(500).send({
             message: "something went wrong, check the log in your terminal",
         });

@@ -40,15 +40,13 @@
 }
 
 .card_container {
-    background-color: #fff;
+    background-color: #f1f1f1;
     width: 100%;
     width: 236px;
     max-height: 384px;
     border-radius: 12px;
     padding: 8px;
     border: 1px solid #CFD9F0;
-
-
 }
 
 .image_container {
