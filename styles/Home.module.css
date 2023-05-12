@@ -77,6 +77,16 @@
     max-width: 800px;
 }
 
+@media screen and (max-width: 600px) {
+    .grid {
+        padding: 0.5rem;
+    }
+
+    .main {
+        padding: 0;
+    }
+}
+
 .card {
     margin: 1rem;
     padding: 1.5rem;

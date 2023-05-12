@@ -8,7 +8,6 @@ import React, {useState} from "react";
 import {Contract, ethers} from "ethers";
 import {useAccount, useSigner} from "wagmi";
 import NftGallery from "../components/NftGallery";
-import {Network} from "alchemy-sdk";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -204,7 +203,6 @@ const Home: NextPage = () => {
 
                             <Image
                                 margin={5}
-                                boxSize="450px"
                                 src={creatureImg}
                                 alt="Creature"
                             />
