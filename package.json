@@ -12,16 +12,17 @@
     "@chakra-ui/react": "^2.6.1",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@pinata/sdk": "^2.1.0",
     "@rainbow-me/rainbowkit": "^0.12.14",
+    "@vercel/analytics": "^1.0.1",
+    "alchemy-sdk": "2.8.3",
     "ethers": "^5.7.2",
     "framer-motion": "^10.12.10",
     "next": "^13.4.1",
+    "openai": "^3.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "wagmi": "^0.12.13",
-    "@pinata/sdk": "^2.1.0",
-    "openai": "^3.2.1",
-    "alchemy-sdk": "2.8.3"
+    "wagmi": "^0.12.13"
   },
   "devDependencies": {
     "@types/node": "^20.1.2",
