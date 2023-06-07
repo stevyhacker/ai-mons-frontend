@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            version: "3554d9e699e09693d3fa334a79c58be9a405dd021d3e11281256d53185868912",
+            version: "ff6cc781634191dd3c49097a615d2fc01b0a8aae31c448e55039a04dcbf36bba",
             input: {prompt: req.body.prompt},
         })
     });

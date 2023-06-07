@@ -57,6 +57,7 @@ const Home: NextPage = () => {
             });
 
             if (response.status !== 201) {
+                console.log(response);
                 throw new Error(`Error: ${response.status}`);
             }
 
