@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const imageResponse = await fetch(req.body.image_url);
             const blob = await imageResponse.blob();
             fs.writeFileSync('/tmp/image.png', Buffer.from(await blob.arrayBuffer()));
-            const file = fs.createReadStream('image.png');
+            const file = fs.createReadStream('/tmp/image.png');
 
             pinata.pinFileToIPFS(file,
                 {
